@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="PathFinder.Tests/PathFinder.Tests.csproj" />
+  <Project Path="PathFinder/PathFinder.csproj" />
+</Solution>
