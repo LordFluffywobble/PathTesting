@@ -18,4 +18,17 @@ public class PathTest
         Assert.Equal(34, path.Y);
         Assert.Equal(56, path.Z);
     }
+    
+    [Fact]
+    public void UpdateCoordinates_Should_Return_XYZ()
+    {
+        var path = new PathFinders();
+        
+        path.UpdateCoordinates(34, 123, 86);
+
+        Assert.Equal( 34, path.X);
+        Assert.Equal(128, path.Y);
+        Assert.Equal( 68, path.Z);
+
+    }
 }
