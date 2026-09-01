@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using Testing.PathFinder.InterFaces;
+﻿using Testing.PathFinder.InterFaces;
 
 namespace Testing.PathFinder;
 
@@ -16,4 +14,12 @@ public class PathFinders : IAddCoordinates
         Y = y;
         Z = z;
     }
+
+    public void UpdateCoordinates(double x, double y, double z)
+    {
+        X = x;
+        Y = y;
+        Z = z;
+    }
+    
 }

@@ -27,8 +27,8 @@ public class PathTest
         path.UpdateCoordinates(34, 123, 86);
 
         Assert.Equal( 34, path.X);
-        Assert.Equal(128, path.Y);
-        Assert.Equal( 68, path.Z);
+        Assert.Equal(123, path.Y);
+        Assert.Equal( 86, path.Z);
 
     }
 }
