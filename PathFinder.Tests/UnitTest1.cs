@@ -15,21 +15,25 @@ public class PathTest
         path.AddCoordinates(12, 34, 56);
         
         //Assert: Sjekker at resultatet er riktig
-        Assert.Equal(12, path.X);
-        Assert.Equal(34, path.Y);
-        Assert.Equal(56, path.Z);
+        Assert.Equal(12, path.PathHistory[0].X);
+        Assert.Equal(34, path.PathHistory[0].Y);
+        Assert.Equal(56, path.PathHistory[0].Z);
     }
     
     [Fact]
     public void UpdateCoordinates_ShouldReturnXYZ()
     {
         var path = new PathFinders();
-        
+
+        //Adding this forst otherwise the lambda function wont do anything
+        path.AddCoordinates(10, 10, 10);
+
+        //Here is the one i want to check
         path.UpdateCoordinates(34, 123, 86);
 
-        Assert.Equal( 34, path.X);
-        Assert.Equal(123, path.Y);
-        Assert.Equal( 86, path.Z);
+        Assert.Equal( 34, path.PathHistory[0].X);
+        Assert.Equal(123, path.PathHistory[0].Y);
+        Assert.Equal( 86, path.PathHistory[0].Z);
     }
 
     [Fact]
