@@ -5,7 +5,7 @@ namespace PathFinder.Tests;
 public class PathTest
 {
     [Fact]
-    public void AddCoordinates_Should_Return_XYZ()
+    public void AddCoordinates_ShouldReturnXYZ()
     {
         //Arrange: Sette opp test data og objekter
         var path = new PathFinders();
@@ -20,7 +20,7 @@ public class PathTest
     }
     
     [Fact]
-    public void UpdateCoordinates_Should_Return_XYZ()
+    public void UpdateCoordinates_ShouldReturnXYZ()
     {
         var path = new PathFinders();
         
