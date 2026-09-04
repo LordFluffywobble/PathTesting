@@ -47,4 +47,19 @@ public class PathTest
         double sPath = path.ShortestPathTest();
         Assert.Equal(101.597, sPath ,3);
     }
+
+    [Fact]
+    public void IncrementCoordinates_ShouldReturnDouble()
+    {
+        var path = new PathFinders();
+
+        path.AddCoordinates(50, 23, 56);
+        path.IncrementCoordinates(5, 67, 8);
+
+        List newCoordinate = path.PathHistory[0] + path.IncrementCoordinates;
+
+        Assert.Equal(55, newCoordinate.X);
+        Assert.Equal(90, newCoordinate.Y);
+        Assert.Equal(64, newCoordinate.Z);
+    }
 }

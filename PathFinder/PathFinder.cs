@@ -27,6 +27,10 @@ public class PathFinders
         double dz = path2.Z - path1.Z;
 
         return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+    }
 
+    public double IncrementCoordinates()
+    {
+        
     }
 }
