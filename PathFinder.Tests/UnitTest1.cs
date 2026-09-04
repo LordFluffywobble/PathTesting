@@ -1,4 +1,5 @@
-﻿using Testing.PathFinder;
+﻿using System.Runtime.InteropServices;
+using Testing.PathFinder;
 using Xunit.Sdk;
 
 namespace PathFinder.Tests;
@@ -42,16 +43,8 @@ public class PathTest
         var path = new PathFinders();
         path.AddCoordinates(34, 56 ,23);
         path.AddCoordinates(123, 7, 23);
-
-        var path1 = path.PathHistory[0];
-        var path2 = path.PathHistory[1];
-
-        double dx = path2.X - path1.X;
-        double dy = path2.Y - path1.Y;
-        double dz = path2.Z - path1.Z;
         
-        double sPath = Math.Sqrt(dx * dx + dy * dy + dz *dz);
-
-        Assert.Equal(101.597, sPath, 3);
+        double sPath = path.ShortestPathTest();
+        Assert.Equal(101.597, sPath ,3);
     }
 }
