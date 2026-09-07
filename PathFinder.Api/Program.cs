@@ -9,7 +9,7 @@ builder.Services.AddSingleton<PathFinders>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -60,6 +60,20 @@ app.MapGet("/api/path/{id}", (PathFinders pathFinder, int id) =>
     }   
     return Results.Ok(pathFinder.PathHistory[id]);
     
+});
+
+app.MapGet("/path/api/shortestpath", (PathFinders pathFinder) => 
+{
+    
+    if (pathFinder.PathHistory.Count != 2)
+    {
+        return Results.BadRequest("Error: Wrong Coordinate Map");
+    }
+
+    var sPath = pathFinder.ShortestPath();
+
+    return Results.Ok(new {ShortesPathIs = sPath});
+
 });
 
 app.Run();
