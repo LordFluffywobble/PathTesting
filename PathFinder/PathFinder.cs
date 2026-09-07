@@ -29,10 +29,10 @@ public class PathFinders
         return Math.Sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    public double IncrementCoordinates(double x, double y, double z)
+    public void IncrementCoordinates(double x, double y, double z)
     {
         if (PathHistory.Count == 0)
-            return 0.0;
+            return;
 
         var path1 = PathHistory[0];
         
@@ -43,8 +43,6 @@ public class PathFinders
         );
 
         PathHistory.Add(newCoordinate);
-        
-        return 0.0; 
-        
+                
     }
 }
