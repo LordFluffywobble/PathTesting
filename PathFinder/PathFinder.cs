@@ -35,12 +35,11 @@ public class PathFinders
             return 0.0;
 
         var path1 = PathHistory[0];
-        var path2 = PathHistory[PathHistory.Count - 1];
-
+        
         var newCoordinate = new Coordinates(
-            path1.X + path2.X,
-            path1.Y + path2.Y,
-            path1.Z + path2.Z
+            path1.X + x,
+            path1.Y + y,
+            path1.Z + z
         );
 
         PathHistory.Add(newCoordinate);

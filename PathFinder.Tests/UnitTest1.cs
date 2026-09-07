@@ -53,9 +53,8 @@ public class PathTest
     {
         var path = new PathFinders();
         path.AddCoordinates(50, 23, 56);
-        path.AddCoordinates(5, 67, 8);
-
-        path.IncrementCoordinates(0, 0, 0);
+        
+        path.IncrementCoordinates(5, 67, 8);
 
         var updatedCoordinates = path.PathHistory[path.PathHistory.Count - 1];
         
