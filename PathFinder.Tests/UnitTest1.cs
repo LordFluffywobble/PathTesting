@@ -44,22 +44,23 @@ public class PathTest
         path.AddCoordinates(34, 56 ,23);
         path.AddCoordinates(123, 7, 23);
         
-        double sPath = path.ShortestPathTest();
+        double sPath = path.ShortestPath();
         Assert.Equal(101.597, sPath ,3);
     }
 
     [Fact]
-    public void IncrementCoordinates_ShouldReturnDouble()
+    public void IncrementCoordinates_ShouldReturnADouble()
     {
         var path = new PathFinders();
-
         path.AddCoordinates(50, 23, 56);
-        path.IncrementCoordinates(5, 67, 8);
+        path.AddCoordinates(5, 67, 8);
 
-        List newCoordinate = path.PathHistory[0] + path.IncrementCoordinates;
+        path.IncrementCoordinates(0, 0, 0);
 
-        Assert.Equal(55, newCoordinate.X);
-        Assert.Equal(90, newCoordinate.Y);
-        Assert.Equal(64, newCoordinate.Z);
+        var updatedCoordinates = path.PathHistory[path.PathHistory.Count - 1];
+        
+        Assert.Equal(55, updatedCoordinates.X);
+        Assert.Equal(90, updatedCoordinates.Y);
+        Assert.Equal(64, updatedCoordinates.Z);
     }
 }

@@ -14,7 +14,7 @@ public class PathFinders
     public void UpdateCoordinates(double x, double y, double z) => 
         _ = PathHistory.Count > 0 ? PathHistory[PathHistory.Count - 1] = new Coordinates(x, y, z) : default;
     
-    public double ShortestPathTest()
+    public double ShortestPath()
     {
 
         if (PathHistory.Count < 2) 
@@ -29,8 +29,23 @@ public class PathFinders
         return Math.Sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    public double IncrementCoordinates()
+    public double IncrementCoordinates(double x, double y, double z)
     {
+        if (PathHistory.Count == 0)
+            return 0.0;
+
+        var path1 = PathHistory[0];
+        var path2 = PathHistory[PathHistory.Count - 1];
+
+        var newCoordinate = new Coordinates(
+            path1.X + path2.X,
+            path1.Y + path2.Y,
+            path1.Z + path2.Z
+        );
+
+        PathHistory.Add(newCoordinate);
+        
+        return 0.0; 
         
     }
 }
