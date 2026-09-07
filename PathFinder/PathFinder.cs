@@ -42,7 +42,7 @@ public class PathFinders
             path1.Z + z
         );
 
-        PathHistory.Add(newCoordinate);
-                
+        PathHistory.Add(newCoordinate);     
     }
+    
 }
