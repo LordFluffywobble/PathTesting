@@ -33,18 +33,17 @@ app.MapPost("/api/path/add", (Coordinates coord, PathFinders pathFinder) =>
     });
 });
 
-app.MapGet("/api/path/history", (PathFinders pathFinder) =>
-{
+app.MapGet("/api/path/history", (PathFinders pathFinder) => {
     return Results.Ok(pathFinder.PathHistory);
 });
 
 
 app.MapPut("/api/path/update", (Coordinates coord, PathFinders pathFinder) =>
 {
-    if (pathFinder.PathHistory.Count == 0)
-    {
+    if (pathFinder.PathHistory.Count == 0){
         return Results.BadRequest("No history");
     }
+    
     pathFinder.UpdateCoordinates(coord.X, coord.Y, coord.Z);
     
     return Results.Ok(new { 
@@ -55,10 +54,10 @@ app.MapPut("/api/path/update", (Coordinates coord, PathFinders pathFinder) =>
 
 app.MapGet("/api/path/{id}", (PathFinders pathFinder, int id) =>
 {
-    if (id < 0 || id >= pathFinder.PathHistory.Count)
-    {
+    if (id < 0 || id >= pathFinder.PathHistory.Count){
         return Results.NotFound("No such Id");
     }   
+    
     return Results.Ok(pathFinder.PathHistory[id]);
     
 });
@@ -66,8 +65,7 @@ app.MapGet("/api/path/{id}", (PathFinders pathFinder, int id) =>
 app.MapGet("/path/api/shortestpath", (PathFinders pathFinder) => 
 {
     
-    if (pathFinder.PathHistory.Count != 2)
-    {
+    if (pathFinder.PathHistory.Count != 2){
         return Results.BadRequest("Error: Wrong Coordinate Map");
     }
 
@@ -77,21 +75,18 @@ app.MapGet("/path/api/shortestpath", (PathFinders pathFinder) =>
 
 });
 
-app.MapDelete("/path/api/delete/{id}", (PathFinders pathFinder, int id,ILogger<Program> logger) =>
+app.MapDelete("/path/api/delete/{id}", (PathFinders pathFinder, int id) =>
 {
     if (id < 0 || id >= pathFinder.PathHistory.Count){
-        logger.LogWarning("Failed to delete path with ID {id}", id);
         return Results.NotFound($"Path with ID {id} does not exists");
     }
     
     var deletedPath = pathFinder.PathHistory[id];
+    pathFinder.DeleteTaskId(id);
     
-    //logger.LogInformation("Removed ID {Id} from PathHistory", id);
-    pathFinder.PathHistory.RemoveAt(id);
-
     return Results.Ok(new {
         message = $"Removed path with ID {id}",
-        deletedData = deletedPath   
+        deletedData = deletedPath  
     });
 });
 

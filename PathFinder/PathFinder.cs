@@ -1,4 +1,7 @@
 ﻿
+using System.Data.Common;
+using System.Security.Cryptography.X509Certificates;
+
 namespace Testing.PathFinder;
 
 public record struct Coordinates(double X, double Y, double Z);
@@ -44,8 +47,7 @@ public class PathFinders
 
         PathHistory.Add(newCoordinate);     
     }
-    public void DeleteTaskId()
-    {
-        
+    public void DeleteTaskId(int id) {
+        PathHistory.RemoveAt(id);
     }
 }
