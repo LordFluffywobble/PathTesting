@@ -14,9 +14,8 @@ public class PathFinders
         PathHistory.Add(new Coordinates(x, y, z));
     
 
-    public void UpdateCoordinates(double x, double y, double z) => 
-        // Needs to update based on ID. Now it only pdates the last path
-        _ = PathHistory.Count > 0 ? PathHistory[PathHistory.Count - 1] = new Coordinates(x, y, z) : default;
+    public void UpdateCoordinates(double x, double y, double z, int id) => 
+        PathHistory[id] = new Coordinates(x, y, z) ;
     
     public double ShortestPath()
     {

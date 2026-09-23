@@ -38,13 +38,13 @@ app.MapGet("/api/path/history", (PathFinders pathFinder) => {
 });
 
 
-app.MapPut("/api/path/update", (Coordinates coord, PathFinders pathFinder) =>
+app.MapPut("/api/path/update", (Coordinates coord, PathFinders pathFinder, int id) =>
 {
     if (pathFinder.PathHistory.Count == 0){
         return Results.BadRequest("No history");
     }
     
-    pathFinder.UpdateCoordinates(coord.X, coord.Y, coord.Z);
+    pathFinder.UpdateCoordinates(coord.X, coord.Y, coord.Z, id);
     
     return Results.Ok(new { 
         Message = "Coordinates updated",
