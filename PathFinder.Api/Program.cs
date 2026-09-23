@@ -68,6 +68,12 @@ app.MapGet("/path/api/shortestpath", (PathFinders pathFinder, int id1, int id2) 
     if (pathFinder.PathHistory.Count < 2){
         return Results.BadRequest("Error: To few coordinates");
     }
+    if (id1 < 0 || id1 > pathFinder.PathHistory.Count){
+        return Results.BadRequest("Error: No such ID exists for path 1");
+    }
+    if (id2 < 0 || id2 > pathFinder.PathHistory.Count){
+        return Results.BadRequest("Error: No such ID exists for path 2");
+    }
 
     var path1 = pathFinder.PathHistory[id1];
     var path2 = pathFinder.PathHistory[id2];
