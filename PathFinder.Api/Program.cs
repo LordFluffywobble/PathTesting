@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Scalar.AspNetCore;
 using Testing.PathFinder;
 
@@ -74,6 +75,24 @@ app.MapGet("/path/api/shortestpath", (PathFinders pathFinder) =>
 
     return Results.Ok(new {ShortesPathIs = sPath});
 
+});
+
+app.MapDelete("/path/api/delete/{id}", (PathFinders pathFinder, int id,ILogger<Program> logger) =>
+{
+    if (id < 0 || id >= pathFinder.PathHistory.Count){
+        logger.LogWarning("Failed to delete path with ID {id}", id);
+        return Results.NotFound($"Path with ID {id} does not exists");
+    }
+    
+    var deletedPath = pathFinder.PathHistory[id];
+    
+    //logger.LogInformation("Removed ID {Id} from PathHistory", id);
+    pathFinder.PathHistory.RemoveAt(id);
+
+    return Results.Ok(new {
+        message = $"Removed path with ID {id}",
+        deletedData = deletedPath   
+    });
 });
 
 app.Run();

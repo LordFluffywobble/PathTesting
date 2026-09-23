@@ -62,4 +62,15 @@ public class PathTest
         Assert.Equal(90, updatedCoordinates.Y);
         Assert.Equal(64, updatedCoordinates.Z);
     }
+    [Fact]
+    public void DeleteTaskIdTest_ShouldReturnIdDeleted()
+    {
+        var path = new PathFinders();
+
+        bool result = path.DeleteTaskId(0);
+
+        Assert.True(result);
+        Assert.Equal(1, path.PathHistory.Count);
+        Assert.Equal(33, path.PathHistory[1].X);
+    }
 }

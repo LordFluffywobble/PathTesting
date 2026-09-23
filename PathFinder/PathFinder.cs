@@ -44,5 +44,8 @@ public class PathFinders
 
         PathHistory.Add(newCoordinate);     
     }
-    
+    public void DeleteTaskId()
+    {
+        
+    }
 }
