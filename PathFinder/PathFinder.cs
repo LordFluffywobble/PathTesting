@@ -30,12 +30,9 @@ public class PathFinders
         return Math.Sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    public void IncrementCoordinates(double x, double y, double z)
+    public void IncrementCoordinates(double x, double y, double z, int id)
     {
-        if (PathHistory.Count == 0)
-            return;
-
-        var path1 = PathHistory[0];
+        var path1 = PathHistory[id];
         
         var newCoordinate = new Coordinates(
             path1.X + x,
