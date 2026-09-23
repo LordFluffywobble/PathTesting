@@ -17,13 +17,11 @@ public class PathFinders
     public void UpdateCoordinates(double x, double y, double z, int id) => 
         PathHistory[id] = new Coordinates(x, y, z) ;
     
-    public double ShortestPath()
+    public double ShortestPath(int id1, int id2)
     {
 
-        if (PathHistory.Count < 2) 
-            return 0;
-        var path1 = PathHistory[0];
-        var path2 = PathHistory[1];
+        var path1 = PathHistory[id1];
+        var path2 = PathHistory[id2];
 
         double dx = path2.X - path1.X;
         double dy = path2.Y - path1.Y;

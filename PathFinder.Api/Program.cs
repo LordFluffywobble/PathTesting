@@ -62,14 +62,16 @@ app.MapGet("/api/path/{id}", (PathFinders pathFinder, int id) =>
     
 });
 
-app.MapGet("/path/api/shortestpath", (PathFinders pathFinder) => 
+app.MapGet("/path/api/shortestpath", (PathFinders pathFinder, int id1, int id2) => 
 {
     
-    if (pathFinder.PathHistory.Count != 2){
-        return Results.BadRequest("Error: Wrong Coordinate Map");
+    if (pathFinder.PathHistory.Count < 2){
+        return Results.BadRequest("Error: To few coordinates");
     }
 
-    var sPath = pathFinder.ShortestPath();
+    var path1 = pathFinder.PathHistory[id1];
+    var path2 = pathFinder.PathHistory[id2];
+    var sPath = pathFinder.ShortestPath(id1, id2);
 
     return Results.Ok(new {ShortesPathIs = sPath});
 
