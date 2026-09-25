@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Testing.PathFinder;
-using Xunit.Sdk;
+using Xunit;
 
 namespace PathFinder.Tests;
 

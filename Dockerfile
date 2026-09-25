@@ -17,6 +17,8 @@ WORKDIR /src
 
 COPY ["PathFinder.Api/PathFinder.Api.csproj", "PathFinder.Api/"]
 COPY ["PathFinder/PathFinder.csproj", "PathFinder/"]
+COPY ["PathFinder.AppHost/PathFinder.AppHost.csproj", "PathFinder.AppHost/"]
+COPY ["PathFinder.ServiceDefaults/PathFinder.ServiceDefaults.csproj", "PathFinder.ServiceDefaults/"]
 RUN dotnet restore "PathFinder.Api/PathFinder.Api.csproj"
 
 # Kopier resten av kildekoden og bygg prosjektet i Release-modus

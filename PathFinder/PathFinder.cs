@@ -4,7 +4,10 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Testing.PathFinder;
 
-public record struct Coordinates(double X, double Y, double Z);
+public record Coordinates (double X, double Y, double Z)
+{
+      public int Id { get; set; }
+}
 public class PathFinders
 {
   
@@ -32,12 +35,12 @@ public class PathFinders
 
     public void IncrementCoordinates(double x, double y, double z, int id)
     {
-        var path1 = PathHistory[id];
         
         var newCoordinate = new Coordinates(
-            path1.X + x,
-            path1.Y + y,
-            path1.Z + z
+            PathHistory[id].X + x,
+            PathHistory[id].Y + y,
+            PathHistory[id].Z + z
+            
         );
 
         PathHistory.Add(newCoordinate);     

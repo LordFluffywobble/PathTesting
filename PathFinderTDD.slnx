@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="PathFinder.Api/PathFinder.Api.csproj" />
-  <Project Path="PathFinder.Tests/PathFinder.Tests.csproj" />
+  <Project Path="PathFinder.AppHost/PathFinder.AppHost.csproj" />
+  <Project Path="PathFinder.ServiceDefaults/PathFinder.ServiceDefaults.csproj" />
   <Project Path="PathFinder/PathFinder.csproj" />
 </Solution>

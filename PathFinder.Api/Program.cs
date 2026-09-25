@@ -1,8 +1,22 @@
+using Aspire.Npgsql.EntityFrameworkCore.PostgreSQL;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Scalar.AspNetCore;
 using Testing.PathFinder;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
+
+var connectionString = builder.Configuration.GetConnectionString("PathFinderDb");
+
+builder.AddNpgsqlDbContext<PathFinderDbContext>("PathFinderDb");
 
 builder.Services.AddOpenApi();
 
@@ -10,93 +24,128 @@ builder.Services.AddSingleton<PathFinders>();
 
 var app = builder.Build();
 
+app.MapDefaultEndpoints();
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.MapOpenApi();
     app.MapScalarApiReference(options =>
     {
         options.WithTitle("With Pathfinder API documentation")
             .WithTheme(ScalarTheme.DeepSpace);
     });
-}
+//}
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
-app.MapPost("/api/path/add", (Coordinates coord, PathFinders pathFinder) =>
-{
-    pathFinder.AddCoordinates(coord.X, coord.Y, coord.Z);
+app.MapPost("/api/path/add", async (Coordinates coord, PathFinderDbContext db) =>{
+    var newCoord = new Coordinates(coord.X, coord.Y, coord.Z){
+        Id = 0 // Postgres genererer en ny automatisk
+    };
+
+    db.Coordinates.Add(newCoord);
+    await db.SaveChangesAsync();
 
     return Results.Ok(new {
-        Message = "Coordinates added", 
-        CurrentHistory = pathFinder.PathHistory
+        Message = "Coordinates added to database", 
+        Data = newCoord
     });
 });
 
-app.MapGet("/api/path/history", (PathFinders pathFinder) => {
-    return Results.Ok(pathFinder.PathHistory);
+app.MapGet("/api/path/history", async (PathFinderDbContext db) => {
+    var history = await db.Coordinates.ToListAsync();
+    return Results.Ok(history);
 });
 
 
-app.MapPut("/api/path/update", (Coordinates coord, PathFinders pathFinder, int id) =>
-{
-    if (pathFinder.PathHistory.Count == 0){
-        return Results.BadRequest("No history");
+app.MapPut("/api/path/update/{id}", async (Coordinates coord, PathFinderDbContext db, int id) =>{   
+    var foundCoord = await db.Coordinates.FindAsync(id);
+    
+    if (foundCoord == null){
+        return Results.NotFound($"No such coordinates with ID {id}");      
     }
-    
-    pathFinder.UpdateCoordinates(coord.X, coord.Y, coord.Z, id);
-    
+
+    var updatedCoord = foundCoord with {X = coord.X, Y = coord.Y, Z = coord.Z};
+
+    db.Entry(foundCoord).CurrentValues.SetValues(updatedCoord);
+    await db.SaveChangesAsync();
+
     return Results.Ok(new { 
         Message = "Coordinates updated",
-        CurrentHistory = pathFinder.PathHistory
+        Data = updatedCoord
     });    
 });
 
-app.MapGet("/api/path/{id}", (PathFinders pathFinder, int id) =>
-{
-    if (id < 0 || id >= pathFinder.PathHistory.Count){
-        return Results.NotFound("No such Id");
-    }   
-    
-    return Results.Ok(pathFinder.PathHistory[id]);
+app.MapGet("/api/path/{id}", async (PathFinderDbContext db, int id) =>{
+    var identity = await db.Coordinates.FindAsync(id);
+
+    if ( identity == null){
+        return Results.NotFound(new {
+            Message = $"Found no Coordinates with the ID {id}"});       
+    }
+    return Results.Ok(identity);
     
 });
 
-app.MapGet("/path/api/shortestpath", (PathFinders pathFinder, int id1, int id2) => 
-{
+app.MapGet("/path/api/shortestpath", async (PathFinderDbContext db, int id1, int id2) =>{  
+    var path1 = await db.Coordinates.FindAsync(id1);
+    var path2 = await db.Coordinates.FindAsync(id2);
     
-    if (pathFinder.PathHistory.Count < 2){
-        return Results.BadRequest("Error: To few coordinates");
-    }
-    if (id1 < 0 || id1 > pathFinder.PathHistory.Count){
-        return Results.BadRequest("Error: No such ID exists for path 1");
-    }
-    if (id2 < 0 || id2 > pathFinder.PathHistory.Count){
-        return Results.BadRequest("Error: No such ID exists for path 2");
-    }
+    double dx = path2.X - path1.X;
+    double dy = path2.Y - path1.Y;
+    double dz = path2.Z - path1.Z;
 
-    var path1 = pathFinder.PathHistory[id1];
-    var path2 = pathFinder.PathHistory[id2];
-    var sPath = pathFinder.ShortestPath(id1, id2);
+    var sPath = Math.Sqrt(dx*dx + dy*dy + dz*dz);
 
-    return Results.Ok(new {ShortesPathIs = sPath});
+    return Results.Ok(new {ShortestPathIs = sPath});
 
 });
 
-app.MapDelete("/path/api/delete/{id}", (PathFinders pathFinder, int id) =>
-{
-    if (id < 0 || id >= pathFinder.PathHistory.Count){
-        return Results.NotFound($"Path with ID {id} does not exists");
+app.MapPut("/path/api/incrementcoordinates/{id}", async (PathFinderDbContext db,Coordinates coord, int id) => {
+    var baseCoord = await db.Coordinates.FindAsync(id);
+    
+    if ( baseCoord == null){
+        return Results.BadRequest($"Error: No such ID exists");        
     }
-    
-    var deletedPath = pathFinder.PathHistory[id];
-    pathFinder.DeleteTaskId(id);
-    
+
+    var newCoordinate = new Coordinates(
+        baseCoord.X + coord.X,
+        baseCoord.Y + coord.Y,
+        baseCoord.Z + coord.Z
+    )
+    {
+        Id = 0
+    };
+
+    db.Coordinates.Add(newCoordinate);
+    await db.SaveChangesAsync();
+
     return Results.Ok(new {
-        message = $"Removed path with ID {id}",
-        deletedData = deletedPath  
+        Message = $"Incremented the coordinates at ID {id} and created a new one",
+        Path = newCoordinate
     });
 });
+
+app.MapDelete("/path/api/delete/{id}", async (PathFinderDbContext db, int id) =>{
+    var coord = await db.Coordinates.FindAsync(id);
+    if (coord == null){
+        return Results.NotFound($"ID {id} does not exist");
+    }
+    db.Coordinates.Remove(coord);
+    await db.SaveChangesAsync();
+    
+    return Results.Ok(new {
+        Message = $"Removed path with ID {id}"
+    });
+});
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<PathFinderDbContext>();
+    db.Database.EnsureDeleted();
+    db.Database.EnsureCreated();
+}
 
 app.Run();
 
